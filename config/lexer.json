@@ -1,0 +1,17 @@
+{
+	"tokens": [
+		"arrow",
+		"close_brace",
+		"close_bracket",
+		"colon",
+		"comma",
+		"newline",
+		"open_brace",
+		"open_bracket",
+		"whitespace",
+		"word"
+	],
+	"nodes": {
+		
+	}
+}
