@@ -1,0 +1,6 @@
+Hello {
+	role Self, Other
+	parameter out greeting key
+
+	Self -> Other: hi [out greetig key]
+}

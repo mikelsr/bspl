@@ -12,6 +12,78 @@
 		"word"
 	],
 	"nodes": {
-		
+		"q0": {
+			"final": false,
+			"paths": {
+				"^[A-Za-z]$":	"q1",
+				"^[ |\t]$":	"q2",
+				"^\\n$":	"q3",
+				"^\\{$":	"q4",
+				"^\\}$":	"q5",
+				"^\\[$":	"q6",
+				"^\\]$":	"q7",
+				"^:$":		"q8",
+				"^,$":		"q9",
+				"^\\-$":	"q10"
+			}
+		},
+		"q1": {
+			"final": true,
+			"token": "word",
+			"paths": {
+				"^[A-Za-z]$":	"q1"
+			}
+		},
+		"q2": {
+			"final": true,
+			"token": "whitespace",
+			"paths": {}
+		},
+		"q3": {
+			"final": true,
+			"token": "newline",
+			"paths": {}
+		},
+		"q4": {
+			"final": true,
+			"token": "open_brace",
+			"paths": {}
+		},
+		"q5": {
+			"final": true,
+			"token": "close_brace",
+			"paths": {}
+		},
+		"q6": {
+			"final": true,
+			"token": "open_bracket",
+			"paths": {}
+		},
+		"q7": {
+			"final": true,
+			"token": "close_bracket",
+			"paths": {}
+		},
+		"q8": {
+			"final": true,
+			"token": "colon",
+			"paths": {}
+		},
+		"q9": {
+			"final": true,
+			"token": "comma",
+			"paths": {}
+		},
+		"q10": {
+			"final": false,
+			"paths": {
+				"^>$": "q11"
+			}
+		},
+		"q11": {
+			"final": true,
+			"token": "arrow",
+			"paths": {}
+		}
 	}
 }
