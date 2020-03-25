@@ -4,28 +4,38 @@ package proto
 type Action struct {
 	From       Role
 	To         Role
-	Parameters []Parameter
+	parameters []Parameter
 }
 
-// IO states wheter a parameter is an input or output parameter
-type IO string
+// Parameters of an Action
+func (a Action) Parameters() []Parameter {
+	return a.parameters
+}
 
 // Parameter of a BSPL protocol
 type Parameter struct {
-	key  bool
-	name string
-	io   IO
+	Io   IO
+	Name string
+	Key  bool
 }
 
-// Protocol represents a BSPL protocol
+// Protocol is a definition of a BSPQL protocol
 type Protocol struct {
-	Roles      []Role
-	Parameters []Parameter
-	Actions    []Action
+	from       Role
+	to         Role
+	parameters []Parameter
+}
+
+// Parameters of a Protocol
+func (p Protocol) Parameters() []Parameter {
+	return p.parameters
 }
 
 // Role of a participant in a BSPL protocol
 type Role string
+
+// IO states wheter a parameter is an input or output parameter
+type IO string
 
 const (
 	// In defines a local scope
