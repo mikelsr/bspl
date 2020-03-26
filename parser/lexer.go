@@ -7,6 +7,8 @@ import (
 	"bitbucket.org/mikelsr/gauzaez/lexer"
 )
 
+// newLexer creates a lexer.Lexer with the lexer.Rules taken from the
+// config/lexer.json file found in this project
 func newLexer() (*lexer.Lexer, error) {
 	dir, err := GetProjectDir()
 	path := filepath.SplitList(dir)
@@ -22,6 +24,7 @@ func newLexer() (*lexer.Lexer, error) {
 	return lexer.MakeLexer(*rules)
 }
 
+// LexStream passes the input stream throgh an anonimous lexer
 func LexStream(in io.Reader) (*lexer.TokenTable, error) {
 	lex, err := newLexer()
 	if err != nil {
