@@ -1,0 +1,10 @@
+Purchase {
+	role Buyer, Seller
+	parameter out ID key, out item, out price, out decision, out OK
+
+	Buyer -> Seller:Request [out ID, out item] Seller -> Buyer: Offer [in ID, in item, out price]
+	Buyer -> Seller: Accept [in ID, in item, in price, out decision, out address]
+	Buyer -> Seller: Reject [in ID, in item, in price, out decision, out OK]
+	Seller -> Buyer: Deliver [in ID, in item, in address, out dropOff]
+	Buyer -> Seller: Payment[in ID, in price,in dropOff, out OK]
+}
