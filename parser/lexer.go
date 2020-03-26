@@ -2,7 +2,9 @@ package parser
 
 import (
 	"io"
+	"os"
 	"path/filepath"
+	"strings"
 
 	"bitbucket.org/mikelsr/gauzaez/lexer"
 )
@@ -11,8 +13,8 @@ import (
 // config/lexer.json file found in this project
 func newLexer() (*lexer.Lexer, error) {
 	dir, err := GetProjectDir()
-	path := filepath.SplitList(dir)
-	dir = filepath.Join(path[0 : len(path)-1]...)
+	path := strings.Split(dir, string(os.PathSeparator))
+	dir = "/" + filepath.Join(path[:len(path)-1]...)
 	if err != nil {
 		return nil, err
 	}

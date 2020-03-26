@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bitbucket.org/mikelsr/gauzaez/lexer"
+	am "bitbucket.org/mikelsr/gauzaez/lexer/automaton"
 )
 
 const (
@@ -163,6 +164,59 @@ func validateToken(token string, value string, e eToken) bool {
 		}
 	}
 	return true
+}
+
+// optionalForward recursively checks if optional tokens are being skipped
+func optionalForward(token, value string, es []expected) (bool, int) {
+	// if it is a group, validation failed
+	if !es[0].isAtom() {
+		return false, 1
+	}
+	e := es[0].(eToken)
+	// validate current token
+	if validateToken(token, value, e) {
+		return true, 1
+	}
+	// if optional, validate next token
+	if e.isOptional() {
+		ok, i := optionalForward(token, value, es[1:])
+		return ok, 1 + i
+	}
+	// if not optional and not validated, token is invalid
+	return false, 1
+}
+
+// validateGroup checks a tokens against a token group (eGroup)
+func validateGroup(tokens []am.Token, values []string, group eGroup) (bool, int) {
+	i := 0
+	for i < len(group.expected) {
+		next := group.expected[i]
+		if next.isAtom() {
+			e := next.(eToken)
+			token := string(tokens[i])
+			value := values[i]
+			if !validateToken(token, value, e) {
+				if e.isOptional() {
+					// recursively check ahead if optional tokens are being skipped
+					ok, j := optionalForward(token, value, group.expected[i:])
+					if !ok {
+						// check backwards
+						return false, i + j
+					}
+					i += j
+				}
+			}
+		} else {
+			g := next.(eGroup)
+			ok, j := validateGroup(tokens[i:], values[i:], g)
+			i = i + j
+			if !ok {
+				return false, i
+			}
+		}
+		i++ // TODO
+	}
+	return true, i
 }
 
 // parseSection parses a token table to match an expected structure until
