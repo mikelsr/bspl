@@ -1,6 +1,7 @@
-bitbucket.org/mikelsr/gauzaez v0.0.0-20190409130843-27db1c488736 h1:KaPpB/AV4H3Ypy4xeTzGW8Y+sAnY008g1xASnbbJQW8=
-bitbucket.org/mikelsr/gauzaez v0.0.0-20190409130843-27db1c488736/go.mod h1:7DgX+QXUQmjWpI9aIHpb3+R/7v62zdDfCdo/ajZrjfc=
-github.com/mattn/go-runewidth v0.0.4 h1:2BvfKmzob6Bmd4YsL0zygOqfdFnK7GR4QL06Do4/p7Y=
-github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
-github.com/olekukonko/tablewriter v0.0.1 h1:b3iUnf1v+ppJiOfNX4yxxqfWKMQPZR5yoh8urCTFX88=
-github.com/olekukonko/tablewriter v0.0.1/go.mod h1:vsDQFd/mU46D+Z4whnwzcISnGGzXWMclvtLoiIKAKIo=
+bitbucket.org/mikelsr/gauzaez v1.0.0 h1:N1qszOTm8Ao1WHrvk9AyZMWX5RP5wpUIQqxBrnA4H9E=
+bitbucket.org/mikelsr/gauzaez v1.0.0/go.mod h1:uRxDJYAEn0imoBIeSXoHcJ/hBQlzNZDoigJvTctq7KM=
+github.com/mattn/go-runewidth v0.0.7/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
+github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
+github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
+github.com/olekukonko/tablewriter v0.0.4 h1:vHD/YYe1Wolo78koG299f7V/VAS08c6IpCLn+Ejf/w8=
+github.com/olekukonko/tablewriter v0.0.4/go.mod h1:zq6QwlOf5SlnkVbMSr5EoBv3636FWnp+qbPhuoO21uA=
