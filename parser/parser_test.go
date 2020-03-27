@@ -3,14 +3,21 @@ package parser
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 
 	"bitbucket.org/mikelsr/gauzaez/lexer"
 	am "bitbucket.org/mikelsr/gauzaez/lexer/automaton"
+	"github.com/mikelsr/bspl/proto"
 )
 
-var testTokens *lexer.TokenTable
+var (
+	// test tokens with whitespaces
+	testTokensW *lexer.TokenTable
+	// test tokens without whitespaces
+	testTokens *lexer.TokenTable
+)
 
 func TestMain(m *testing.M) {
 	dir, err := GetProjectDir()
@@ -24,57 +31,78 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
-	testTokens, err = LexStream(bsplSource)
+	testTokensW, err = LexStream(bsplSource)
 	if err != nil {
 		panic(err)
 	}
+	// Strip token table once to speed up tests
+	tt := Strip(*testTokensW)
+	testTokens = &tt
 	m.Run()
 }
 
-func TestOtionalForward(t *testing.T) {
-	ex := []expected{
-		eToken{name: word, optional: true, reserved: true, mustBe: []string{In, Nil, Out}}, // in, out, nil
-		eToken{name: word}, // value
-		eToken{name: word, optional: true, reserved: true, mustBe: []string{Key}}, // key
-	}
-
-	tt := &lexer.TokenTable{}
-	// skip scope in parameter declaration, use only name and key
-	tt.Tokens = []am.Token{word, word}
-	tt.Values = []string{"param_name", Key}
-	ok, i := optionalForward(string(tt.Tokens[0]), tt.Values[0], ex)
+func TestProtoBuilder_parseName(t *testing.T) {
+	b := new(ProtoBuilder)
+	i, ok := b.parseName(testTokens.Tokens, testTokens.Values)
 	if !ok || i != 2 {
 		t.FailNow()
 	}
-	// skip parameter name, should fail validation
-	tt.Values = []string{Nil, Key} // missing compulsory world
-	if ok, _ := optionalForward(string(tt.Tokens[1]), tt.Values[1], ex[1:]); ok {
+	errTokens := []am.Token{newline}
+	errValues := []string{"\n"}
+	if i, ok = b.parseName(errTokens, errValues); ok || i != 0 {
+		t.FailNow()
+	}
+	// invalid syntax
+	errTokens = []am.Token{openBracket, word, newline}
+	errValues = []string{"{", "name", "\n"}
+	if i, ok = b.parseName(errTokens, errValues); ok || i != 0 {
+		t.FailNow()
+	}
+	// use a reserved word as a name
+	errTokens = []am.Token{word, openBracket, newline}
+	errValues = []string{"key", "{", "\n"}
+	if i, ok = b.parseName(errTokens, errValues); ok || i != 0 {
 		t.FailNow()
 	}
 }
 
-func TestValidateToken(t *testing.T) {
-	et := eToken{name: word, reserved: true}
-	if !validateToken(word, Key, et) {
+func TestProtoBuilder_parseRole(t *testing.T) {
+	b := new(ProtoBuilder)
+	tokens := []am.Token{word, word, comma, word, comma, word, newline}
+	values := []string{"role", "A", ",", "B", ",", "C", "\n"}
+	if i, ok := b.parseRoles(tokens, values); !ok || i != len(tokens)-1 {
 		t.FailNow()
 	}
-	if validateToken(word, "_", et) {
+	if !reflect.DeepEqual(b.p.Roles, []proto.Role{"A", "B", "C"}) {
 		t.FailNow()
 	}
-	et.mustBe = []string{In, Out, Nil}
-	if validateToken(word, Key, et) || !validateToken(word, In, et) {
+	// one of the roles is a reserved keyword
+	values[3] = Role
+	if _, ok := b.parseRoles(tokens, values); ok {
 		t.FailNow()
 	}
-	et.reserved = false
-	if validateToken(word, Key, et) {
+	// invalid syntax
+	tokens = []am.Token{word, word, comma, word, comma, newline}
+	values = []string{"role", "A", ",", "B", ",", "\n"}
+	if _, ok := b.parseRoles(tokens, values); ok {
 		t.FailNow()
 	}
-	et.mustBe = []string{"A", "B", "C"}
-	if !validateToken(word, "B", et) {
+	// missing comma
+	tokens = []am.Token{word, word, word, newline}
+	values = []string{"role", "A", "B", "C", "\n"}
+	if _, ok := b.parseRoles(tokens, values); ok {
 		t.FailNow()
 	}
-	et = eToken{name: colon}
-	if !validateToken(colon, ":", et) || validateToken(word, ":", et) {
+	// missing role reserved word
+	tokens = []am.Token{word, word, comma, word, newline}
+	values = []string{"ERR", "A", ",", "B", "\n"}
+	if _, ok := b.parseRoles(tokens, values); ok {
+		t.FailNow()
+	}
+	// repeated role
+	tokens = []am.Token{word, word, comma, word, newline}
+	values = []string{"role", "A", ",", "A", "\n"}
+	if _, ok := b.parseRoles(tokens, values); ok {
 		t.FailNow()
 	}
 }

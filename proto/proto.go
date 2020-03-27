@@ -21,14 +21,15 @@ type Parameter struct {
 
 // Protocol is a definition of a BSPQL protocol
 type Protocol struct {
-	from       Role
-	to         Role
-	parameters []Parameter
+	Actions []Action
+	Name    string
+	Roles   []Role
+	Params  []Parameter
 }
 
 // Parameters of a Protocol
 func (p Protocol) Parameters() []Parameter {
-	return p.parameters
+	return p.Params
 }
 
 // Role of a participant in a BSPL protocol
