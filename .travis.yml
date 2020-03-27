@@ -5,8 +5,6 @@ language: go
 go:
   - 1.14.1
 
-install: true
-
 script:
-  - env GO111MODULE=on go build
-  - env GO111MODULE=on go test ./...
+  - env GO111MODULE=on go build -x
+  - env GO111MODULE=on go test -v --timeout 30s ./...
