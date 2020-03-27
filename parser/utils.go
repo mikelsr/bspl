@@ -19,6 +19,15 @@ func isReserved(str string) bool {
 	return false
 }
 
+func isScope(str string) bool {
+	for _, w := range scopeWords {
+		if str == w {
+			return true
+		}
+	}
+	return false
+}
+
 // nextNewline returns the index of the next newline token
 func nextNewline(tokens []am.Token) int {
 	for i, v := range tokens {

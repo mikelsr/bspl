@@ -106,3 +106,18 @@ func TestProtoBuilder_parseRole(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestParseParams(t *testing.T) {
+	tokens := []am.Token{word, word, word, comma, word, word, comma, word, word, comma, word}
+	values := []string{In, "a", Key, ",", Out, "b", ",", "c", Key, ",", "d"}
+	expected := []proto.Parameter{
+		proto.Parameter{Io: proto.IO(In), Name: "a", Key: true},
+		proto.Parameter{Io: proto.IO(Out), Name: "b", Key: false},
+		proto.Parameter{Io: proto.IO(Nil), Name: "c", Key: true},
+		proto.Parameter{Io: proto.IO(Nil), Name: "d", Key: false},
+	}
+	params, ok := parseParams(tokens, values)
+	if !ok || !reflect.DeepEqual(params, expected) {
+		t.FailNow()
+	}
+}

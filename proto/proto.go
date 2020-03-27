@@ -15,8 +15,8 @@ func (a Action) Parameters() []Parameter {
 // Parameter of a BSPL protocol
 type Parameter struct {
 	Io   IO
-	Name string
 	Key  bool
+	Name string
 }
 
 // Protocol is a definition of a BSPQL protocol

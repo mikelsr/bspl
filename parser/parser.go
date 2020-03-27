@@ -37,6 +37,8 @@ const (
 var (
 	// reservedWords contains every word reserved by BSPL
 	reservedWords = []string{In, Key, Nil, Out, Param, Role}
+	// scopeWords contains keywords describing parameter scopes
+	scopeWords = []string{In, Nil, Out}
 )
 
 // ProtoBuilder is used to parse a BSPL file and produce a protocol
@@ -44,6 +46,7 @@ type ProtoBuilder struct {
 	p proto.Protocol
 }
 
+// parseName parses the protocol name declaration section of a BSPL protocol
 func (b *ProtoBuilder) parseName(tokens []am.Token, values []string) (int, bool) {
 	i := nextNewline(tokens)
 	// nextNewline should have encountered: [word, {, \n]
@@ -65,6 +68,7 @@ func (b *ProtoBuilder) parseName(tokens []am.Token, values []string) (int, bool)
 	return i, true
 }
 
+// parseRoles parses the role declaration section of a BSPL protocol
 func (b *ProtoBuilder) parseRoles(tokens []am.Token, values []string) (int, bool) {
 	i := nextNewline(tokens)
 	// Expected at least role <Role>
@@ -103,4 +107,92 @@ func (b *ProtoBuilder) parseRoles(tokens []am.Token, values []string) (int, bool
 	}
 	b.p.Roles = roles
 	return i, true
+}
+
+// groupParamTokens parses a token slice and creates groups assuming
+// the tokens belong to a parameter declaration
+func groupParamTokens(tokens []am.Token, values []string) ([][]string, bool) {
+	groups := make([][]string, 1)
+	i := 0
+	for j, t := range tokens {
+		if t == comma {
+			i++
+			groups = append(groups, []string{})
+			continue
+		}
+		if t == word {
+			groups[i] = append(groups[i], values[j])
+			continue
+		}
+		return [][]string{}, false
+	}
+	return groups, true
+}
+
+// parseParams extracts parameter from a token slice from a parameter declaration
+// the expected token input is: <?scope> <name> <?key>, <?scope> <name> <?key>...
+func parseParams(tokens []am.Token, values []string) ([]proto.Parameter, bool) {
+	NIL := []proto.Parameter{}
+	groups, ok := groupParamTokens(tokens, values)
+	if !ok {
+		return NIL, false
+	}
+	params := []proto.Parameter{}
+	for _, g := range groups {
+		if len(g) < 1 || len(g) > 3 {
+			return NIL, false
+		}
+		scope := proto.Nil
+		key := false
+		var name string
+		switch len(g) {
+		// non-key, nil param
+		case 1:
+			name = g[0]
+			if isReserved(name) {
+				return NIL, false
+			}
+		// two cases: <param><key> and <scope><param>
+		case 2:
+			// case 1: <scope> <param>
+			if g[1] == Key {
+				name = g[0]
+				key = true
+				if isReserved(name) {
+					return NIL, false
+				}
+			} else {
+				if isReserved(g[1]) || !isScope(g[0]) {
+					return NIL, false
+				}
+				scope = proto.IO(g[0])
+				name = g[1]
+			}
+		case 3:
+			if !isScope(g[0]) || isReserved(g[1]) || g[2] != Key {
+				return NIL, false
+			}
+			scope = proto.IO(g[0])
+			name = g[1]
+			key = true
+		default:
+			return NIL, false
+		}
+		// check that the name is not repeated
+		for _, p := range params {
+			if p.Name == name {
+				return NIL, false
+			}
+		}
+		params = append(params, proto.Parameter{
+			Io:   scope,
+			Key:  key,
+			Name: name,
+		})
+	}
+	return params, true
+}
+
+func (b *ProtoBuilder) parseProtoParams(tokens []am.Token, values string) (int, bool) {
+	return 0, false
 }
