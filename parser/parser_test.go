@@ -120,4 +120,34 @@ func TestParseParams(t *testing.T) {
 	if !ok || !reflect.DeepEqual(params, expected) {
 		t.FailNow()
 	}
+	values[0] = Key
+	if _, ok = parseParams(tokens, values); ok {
+		t.FailNow()
+	}
+	tokens[0] = arrow
+	if _, ok = parseParams(tokens, values); ok {
+		t.FailNow()
+	}
+	tokens[0] = word
+	values[0] = In
+	// multiple params without comma separation
+	tokens[3] = word
+	if _, ok = parseParams(tokens, values); ok {
+		t.FailNow()
+	}
+	tokens[3] = comma
+	// repeat parameter name
+	values[5] = "a"
+	if _, ok = parseParams(tokens, values); ok {
+		t.FailNow()
+	}
+	values[5] = "b"
+	// assign a reserved keyword to param names from last to first so all
+	// are checked
+	for _, i := range []int{10, 7, 5, 1} {
+		values[i] = Role // reserved keyword
+		if _, ok = parseParams(tokens, values); ok {
+			t.FailNow()
+		}
+	}
 }
