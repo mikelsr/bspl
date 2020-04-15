@@ -77,7 +77,7 @@ func (b *ProtoBuilder) parseRoles(tokens []am.Token, values []string) (int, erro
 	// Expected at least role <Role>
 	// Pair number: role <Role> <comma> <Role>...
 	if i < 2 || i%2 != 0 {
-		return 0, errors.New("Invalid parameter definition")
+		return 0, errors.New("Invalid role definition")
 	}
 	buff := struct {
 		t []am.Token
@@ -196,6 +196,161 @@ func parseParams(tokens []am.Token, values []string) ([]proto.Parameter, error) 
 	return params, nil
 }
 
-func (b *ProtoBuilder) parseProtoParams(tokens []am.Token, values string) (int, bool) {
-	return 0, false
+func (b *ProtoBuilder) parseProtoParams(tokens []am.Token, values []string) (int, error) {
+	i := nextNewline(tokens)
+	// minimal number of word tokens: [parameter, out, X, key] = 4
+	if i < 4 {
+		return 0, errors.New("Invalid protocol parameter definition")
+	}
+	buff := struct {
+		t []am.Token
+		v []string
+	}{t: tokens[:i], v: values[:i]}
+	// first word is "parameter"
+	if buff.t[0] != word || buff.v[0] != Param {
+		return 0, ParseError{Expected: Param, Found: buff.v[0]}
+	}
+	params, err := parseParams(buff.t[1:], buff.v[1:])
+	if err != nil {
+		return 0, err
+	}
+	// ensure that at least one parameter is a key parameter
+	keyParam := false
+	for _, p := range params {
+		if p.Key {
+			keyParam = true
+			break
+		}
+	}
+	if !keyParam {
+		return 0, errors.New("No key parameters")
+	}
+	b.p.Params = params
+	return i, nil
+}
+
+func (b *ProtoBuilder) parseActions(tokens []am.Token, values []string) (int, error) {
+	i := nextNewline(tokens)
+	var actionName string
+	var from, to proto.Role
+	// minimal number of tokens: RoleA -> RoleB: Act[P] = 8
+	if i < 8 {
+		return 0, errors.New("Invalid action")
+	}
+	buff := struct {
+		t []am.Token
+		v []string
+	}{t: tokens[:i], v: values[:i]}
+
+	// first and third tokens are Roles
+	for _, i := range []int{0, 2} {
+		if buff.t[i] != word {
+			return 0, ParseError{Expected: "<Role>", Found: buff.v[i]}
+		}
+		// the role must match one of the roles declared previously
+		definedRole := false
+		for _, role := range b.p.Roles {
+			if string(role) == buff.v[i] {
+				definedRole = true
+			}
+		}
+		if !definedRole {
+			return 0, fmt.Errorf("Unknown role: %s", buff.v[i])
+		}
+	}
+	from = proto.Role(buff.v[0])
+	to = proto.Role(buff.v[2])
+
+	if buff.t[1] != arrow {
+		return 0, ParseError{Expected: "->", Found: buff.v[1]}
+	}
+
+	if buff.t[3] != colon {
+		return 0, ParseError{Expected: ":", Found: buff.v[3]}
+	}
+
+	if buff.t[4] != word {
+		return 0, ParseError{Expected: "<Action name>", Found: buff.v[4]}
+	}
+	actionName = buff.v[4]
+	if isReserved(actionName) {
+		return 0, ReservedError{Word: actionName}
+	}
+
+	if buff.t[5] != openBracket || buff.t[i-1] != closeBracket {
+		return 0, ParseError{Expected: "[ <params...> ]",
+			Found: fmt.Sprintf("%s ... %s", buff.v[5], buff.v[i-1])}
+	}
+
+	params, err := parseParams(buff.t[6:i-1], buff.v[6:i-1])
+	if err != nil {
+		return 0, err
+	}
+	action := proto.Action{
+		Name:   actionName,
+		From:   from,
+		To:     to,
+		Params: params,
+	}
+	b.p.Actions = append(b.p.Actions, action)
+	return i, nil
+}
+
+// Parse a BSPL protocol definition from a list of tokens and values
+func (b *ProtoBuilder) Parse(tokens []am.Token, values []string) error {
+	i := 0
+	j, err := b.parseName(tokens, values)
+	if err != nil {
+		return GlobalParseError{parsed: values[:i], err: err}
+	}
+	i += j + 1 // j+1 skip newline
+	j, err = b.parseRoles(tokens[i:], values[i:])
+	if err != nil {
+		return GlobalParseError{parsed: values[:i], err: err}
+	}
+	i += j + 1
+	j, err = b.parseProtoParams(tokens[i:], values[i:])
+	if err != nil {
+		return GlobalParseError{parsed: values[:i], err: err}
+	}
+	i += j + 1
+
+	// parse first action
+	j, err = b.parseActions(tokens[i:], values[i:])
+	if err != nil {
+		return GlobalParseError{parsed: values[:i], err: err}
+	}
+	i += j + 1
+
+ACTIONS:
+	for {
+		if i >= len(tokens) {
+			return GlobalParseError{parsed: values[:i],
+				err: errors.New("Unexpected EOF")}
+		}
+		switch tokens[i] {
+		case closeBrace:
+			for k := i + 1; k < len(tokens); k++ {
+				if tokens[k] != newline {
+					return GlobalParseError{
+						parsed: values[:i],
+						err: ParseError{
+							Expected: "\n",
+							Found:    values[k],
+						},
+					}
+				}
+			}
+			break ACTIONS
+		case word:
+			j, err = b.parseActions(tokens[i:], values[i:])
+			if err != nil {
+				return err
+			}
+			i += j + 1
+		default:
+			return ParseError{Expected: "Action or '}'", Found: values[i]}
+		}
+	}
+	return nil
 }

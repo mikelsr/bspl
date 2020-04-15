@@ -2,14 +2,15 @@ package proto
 
 // Action in a BSPL protocol
 type Action struct {
-	From       Role
-	To         Role
-	parameters []Parameter
+	Name   string
+	From   Role
+	To     Role
+	Params []Parameter
 }
 
 // Parameters of an Action
 func (a Action) Parameters() []Parameter {
-	return a.parameters
+	return a.Params
 }
 
 // Parameter of a BSPL protocol

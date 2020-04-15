@@ -1,6 +1,9 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // ParamError is returned when a parameter is incorreclty declared
 type ParamError struct {
@@ -28,6 +31,25 @@ type ReservedError struct {
 }
 
 func (e ReservedError) Error() string {
-	return fmt.Sprintf("Used reserved word as a value, words reserved by BSPL are %s.",
-		reservedWords)
+	return fmt.Sprintf("Used reserved word (%s) as a value, words reserved by BSPL are %s.",
+		e.Word, reservedWords)
+}
+
+// GlobalParseError is raised by ProtoBuilder.Parse() and shows correctly
+// parsed values until the error
+type GlobalParseError struct {
+	parsed []string
+	err    error
+}
+
+func (e GlobalParseError) Error() string {
+	var sb strings.Builder
+	for _, v := range e.parsed {
+		if v == "\n" {
+			sb.WriteString("\\n ")
+		} else {
+			sb.WriteString(v + " ")
+		}
+	}
+	return fmt.Sprintf("'%s' after parsing: '%s'", e.err.Error(), sb.String())
 }
