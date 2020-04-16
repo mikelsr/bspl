@@ -1,5 +1,7 @@
 package proto
 
+import "strings"
+
 // Action in a BSPL protocol
 type Action struct {
 	Name   string
@@ -47,3 +49,47 @@ const (
 	// Nil defines a parameter missing from a protocol instance
 	Nil IO = "nil"
 )
+
+func (a Action) String() string {
+	var s strings.Builder
+	s.WriteString(string(a.From) + " -> " + string(a.To) + ": " + a.Name + "[")
+	if len(a.Params) > 0 {
+		s.WriteString(a.Params[0].String())
+		for _, p := range a.Params[1:] {
+			s.WriteString(", " + p.String())
+		}
+	}
+	s.WriteString("]")
+	return s.String()
+}
+
+func (p Parameter) String() string {
+	var s strings.Builder
+	if p.Io != Nil {
+		s.WriteString(string(p.Io) + " ")
+	}
+	s.WriteString(p.Name)
+	if p.Key {
+		s.WriteString(" key")
+	}
+	return s.String()
+}
+
+func (p Protocol) String() string {
+	var s strings.Builder
+	s.WriteString(p.Name + " {\n\trole ")
+	s.WriteString(string(p.Roles[0]))
+	for _, r := range p.Roles[1:] {
+		s.WriteString(", " + string(r))
+	}
+	s.WriteString("\n\tparameter " + p.Params[0].String())
+	for _, v := range p.Params[1:] {
+		s.WriteString(", " + v.String())
+	}
+	s.WriteString("\n\n")
+	for _, a := range p.Actions {
+		s.WriteString("\t" + a.String() + "\n")
+	}
+	s.WriteString("}")
+	return s.String()
+}
