@@ -2,6 +2,7 @@ package bspl
 
 import (
 	"io"
+	"reflect"
 
 	"github.com/mikelsr/bspl/parser"
 	"github.com/mikelsr/bspl/proto"
@@ -41,4 +42,9 @@ func Parse(in io.Reader) (Protocol, error) {
 		return proto.Protocol{}, err
 	}
 	return b.Protocol(), nil
+}
+
+// Compare two BSPL protocols
+func Compare(a, b Protocol) bool {
+	return reflect.DeepEqual(a, b)
 }
