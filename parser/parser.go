@@ -357,5 +357,8 @@ ACTIONS:
 			return ParseError{Expected: "Action or '}'", Found: values[i]}
 		}
 	}
+	// sort roles and actions
+	b.p.SortActions()
+	b.p.SortRoles()
 	return nil
 }

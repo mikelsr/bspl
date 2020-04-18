@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -112,10 +111,10 @@ func TestParseParams(t *testing.T) {
 	tokens := []am.Token{word, word, word, comma, word, word, comma, word, word, comma, word}
 	values := []string{In, "a", Key, ",", Out, "b", ",", "c", Key, ",", "d"}
 	expected := []proto.Parameter{
-		proto.Parameter{Io: proto.IO(In), Name: "a", Key: true},
-		proto.Parameter{Io: proto.IO(Out), Name: "b", Key: false},
-		proto.Parameter{Io: proto.IO(Nil), Name: "c", Key: true},
-		proto.Parameter{Io: proto.IO(Nil), Name: "d", Key: false},
+		{Io: proto.IO(In), Name: "a", Key: true},
+		{Io: proto.IO(Out), Name: "b", Key: false},
+		{Io: proto.IO(Nil), Name: "c", Key: true},
+		{Io: proto.IO(Nil), Name: "d", Key: false},
 	}
 	params, err := parseParams(tokens, values)
 	if err != nil || !reflect.DeepEqual(params, expected) {
@@ -161,9 +160,9 @@ func TestProtoBuilder_parseProtoParams(t *testing.T) {
 		t.FailNow()
 	}
 	expected := []proto.Parameter{
-		proto.Parameter{Io: proto.IO(Out), Name: "ID", Key: true},
-		proto.Parameter{Io: proto.IO(Out), Name: "out_param", Key: false},
-		proto.Parameter{Io: proto.IO(In), Name: "in_param", Key: false},
+		{Io: proto.IO(Out), Name: "ID", Key: true},
+		{Io: proto.IO(Out), Name: "out_param", Key: false},
+		{Io: proto.IO(In), Name: "in_param", Key: false},
 	}
 	if !reflect.DeepEqual(b.p.Parameters(), expected) {
 		t.FailNow()
@@ -191,7 +190,6 @@ func TestProtoBuilder_parseActions(t *testing.T) {
 	tokens := []am.Token{word, arrow, word, colon, word, openBracket, word, comma, word, word, closeBracket, newline}
 	values := []string{"From", "->", "To", ":", "Action", "[", "ID", ",", In, "in_param", "]", "\n"}
 	if i, err := b.parseActions(tokens, values); err != nil || i != len(tokens)-1 {
-		fmt.Println(err)
 		t.FailNow()
 	}
 }
