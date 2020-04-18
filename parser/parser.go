@@ -49,6 +49,11 @@ type ProtoBuilder struct {
 	p proto.Protocol
 }
 
+// Protocol of the ProtoBuilder
+func (b ProtoBuilder) Protocol() proto.Protocol {
+	return b.p
+}
+
 // parseName parses the protocol name declaration section of a BSPL protocol
 func (b *ProtoBuilder) parseName(tokens []am.Token, values []string) (int, error) {
 	i := nextNewline(tokens)

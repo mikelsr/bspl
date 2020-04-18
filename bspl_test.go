@@ -1,14 +1,14 @@
-package main
+package bspl
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
+	"testing"
 
 	"github.com/mikelsr/bspl/parser"
 )
 
-func main() {
+func TestParse(t *testing.T) {
 	dir, err := parser.GetProjectDir()
 	if err != nil {
 		panic(err)
@@ -17,11 +17,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	tokens, err := parser.LexStream(bsplSource)
-	if err != nil {
-		panic(err)
+	if _, err := Parse(bsplSource); err != nil {
+		t.FailNow()
 	}
-	fmt.Println(tokens)
-	stripped := parser.Strip(*tokens)
-	fmt.Printf("Stripped:\n%s", &stripped) // *TokenTable has String() method
 }
