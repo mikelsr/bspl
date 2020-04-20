@@ -116,6 +116,7 @@ func TestParseParams(t *testing.T) {
 		{Io: proto.IO(Nil), Name: "c", Key: true},
 		{Io: proto.IO(Nil), Name: "d", Key: false},
 	}
+	proto.SortParameters(expected)
 	params, err := parseParams(tokens, values)
 	if err != nil || !reflect.DeepEqual(params, expected) {
 		t.FailNow()
@@ -164,6 +165,7 @@ func TestProtoBuilder_parseProtoParams(t *testing.T) {
 		{Io: proto.IO(Out), Name: "out_param", Key: false},
 		{Io: proto.IO(In), Name: "in_param", Key: false},
 	}
+	proto.SortParameters(expected)
 	if !reflect.DeepEqual(b.p.Parameters(), expected) {
 		t.FailNow()
 	}

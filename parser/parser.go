@@ -198,6 +198,7 @@ func parseParams(tokens []am.Token, values []string) ([]proto.Parameter, error) 
 			Name: name,
 		})
 	}
+	proto.SortParameters(params)
 	return params, nil
 }
 
@@ -358,7 +359,7 @@ ACTIONS:
 		}
 	}
 	// sort roles and actions
-	b.p.SortActions()
-	b.p.SortRoles()
+	proto.SortActions(b.p.Actions)
+	proto.SortRoles(b.p.Roles)
 	return nil
 }

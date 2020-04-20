@@ -93,3 +93,83 @@ func (p Protocol) String() string {
 	s.WriteString("}")
 	return s.String()
 }
+
+func findKeys(params []Parameter) []Parameter {
+	keyParams := make([]Parameter, 0)
+	for _, param := range params {
+		if param.Key {
+			keyParams = append(keyParams, param)
+		}
+	}
+	return keyParams
+}
+
+func findIns(params []Parameter) []Parameter {
+	inParams := make([]Parameter, 0)
+	for _, param := range params {
+		if param.Io == In {
+			inParams = append(inParams, param)
+		}
+	}
+	return inParams
+}
+
+func findNils(params []Parameter) []Parameter {
+	nilParams := make([]Parameter, 0)
+	for _, param := range params {
+		if param.Io == Nil {
+			nilParams = append(nilParams, param)
+		}
+	}
+	return nilParams
+}
+
+func findOuts(params []Parameter) []Parameter {
+	outParams := make([]Parameter, 0)
+	for _, param := range params {
+		if param.Io == Out {
+			outParams = append(outParams, param)
+		}
+	}
+	return outParams
+}
+
+// Keys returns a list of the key parameters of the protocol
+func (p Protocol) Keys() []Parameter {
+	return findKeys(p.Parameters())
+}
+
+// Ins returns a list of the implicit parameters of the protocol
+func (p Protocol) Ins() []Parameter {
+	return findIns(p.Params)
+}
+
+// Outs returns a list of the explicit parameters of the protocol
+func (p Protocol) Outs() []Parameter {
+	return findOuts(p.Params)
+}
+
+// Nils returns a list of the nil parameters of the protocol
+func (p Protocol) Nils() []Parameter {
+	return findNils(p.Params)
+}
+
+// Keys returns a list of the key parameters of the action
+func (a Action) Keys() []Parameter {
+	return findKeys(a.Parameters())
+}
+
+// Ins returns a list of the implicit parameters of the action
+func (a Action) Ins() []Parameter {
+	return findIns(a.Params)
+}
+
+// Nils returns a list of the nil parameters of the action
+func (a Action) Nils() []Parameter {
+	return findNils(a.Params)
+}
+
+// Outs returns a list of the explicit parameters of the action
+func (a Action) Outs() []Parameter {
+	return findOuts(a.Params)
+}
