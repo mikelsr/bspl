@@ -361,5 +361,5 @@ ACTIONS:
 	// sort roles and actions
 	proto.SortActions(b.p.Actions)
 	proto.SortRoles(b.p.Roles)
-	return nil
+	return proto.Validate(b.p)
 }
