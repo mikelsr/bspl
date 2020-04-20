@@ -32,6 +32,7 @@ func TestSortActions(t *testing.T) {
 		}},
 	}
 	expected := []string{"A", "B"}
+	SortActions(acts)
 	for i, a := range acts {
 		if a.Name != expected[i] {
 			t.FailNow()

@@ -15,22 +15,21 @@ func Validate(p Protocol) error {
 	// check that actions have at least one key and that key
 	// has been declared in the protocol parameters
 	for _, a := range p.Actions {
-		aKeys := a.Keys()
-		if len(aKeys) < 1 {
-			return ValidationError{Err: fmt.Errorf(
-				"No keys declared for action '%s'", a.Name)}
-		}
-		for _, k := range aKeys {
-			found := false
+		found := false
+		// check it at least one action parameter is a key protocol parameter
+	KeyCheck:
+		for _, k := range a.Params {
 			for _, pk := range keyParams {
 				if pk.Name == k.Name {
 					found = true
+					break KeyCheck
 				}
 			}
-			if !found {
-				return ValidationError{Err: fmt.Errorf(
-					"Undeclared key '%s' for action '%s'", k, a.Name)}
-			}
+		}
+		if !found {
+			return ValidationError{Err: fmt.Errorf(
+				"Action '%s' has no key parameters in common with '%s'",
+				a.Name, p.Name)}
 		}
 	}
 	dependencies := createLinkedActions(p.Actions)

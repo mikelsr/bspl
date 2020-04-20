@@ -199,6 +199,7 @@ func TestProtoBuilder_parseActions(t *testing.T) {
 func TestProtoBuilder_Parse(t *testing.T) {
 	b := new(ProtoBuilder)
 	if err := b.Parse(testTokens.Tokens, testTokens.Values); err != nil {
+		t.Log(err)
 		t.FailNow()
 	}
 }
