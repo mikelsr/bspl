@@ -4,7 +4,7 @@ func testProtocol() Protocol {
 	buyer := Role("Buyer")
 	seller := Role("Seller")
 	p := Protocol{
-		Name:  "Noncircular",
+		Name:  "ProtoName",
 		Roles: []Role{buyer, seller},
 		Params: []Parameter{
 			{Name: "ID", Key: true, Io: Out},

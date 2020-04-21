@@ -15,6 +15,18 @@ func Validate(p Protocol) error {
 	// check that actions have at least one key and that key
 	// has been declared in the protocol parameters
 	for _, a := range p.Actions {
+		// check that both roles are defined in the protocol
+		for _, actionRole := range []Role{a.From, a.To} {
+			definedRole := false
+			for _, role := range p.Roles {
+				if role == actionRole {
+					definedRole = true
+				}
+			}
+			if !definedRole {
+				return ValidationError{Err: fmt.Errorf("Unknown role: %s", actionRole)}
+			}
+		}
 		found := false
 		// check it at least one action parameter is a key protocol parameter
 	KeyCheck:

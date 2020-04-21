@@ -50,6 +50,23 @@ const (
 	Nil IO = "nil"
 )
 
+// Key of the protocol
+func (p Protocol) Key() string {
+	keys := p.Keys()
+	n := len(keys)
+	var sb strings.Builder
+
+	sb.WriteString(p.Name)
+	sb.WriteRune(KeySeparator)
+	for i, k := range keys {
+		sb.WriteString(k.Name)
+		if i != n-1 {
+			sb.WriteRune(KeySeparator)
+		}
+	}
+	return sb.String()
+}
+
 func (a Action) String() string {
 	var s strings.Builder
 	s.WriteString(string(a.From) + " -> " + string(a.To) + ": " + a.Name + "[")
