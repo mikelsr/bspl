@@ -1,14 +1,8 @@
 **Blindingly Simple Protocol Language ([BSPL](https://confluence.oceanobservatories.org/download/attachments/28809860/AAMAS-11-IBIOP.pdf))** Go parser
+and implementation interfacing for [nahs](https://github.com/mikelsr/nahs).
 
 [![Build Status](https://travis-ci.com/mikelsr/bspl.svg?token=736yMuj6XUy7yCEvSpBB&branch=master)](https://travis-ci.com/mikelsr/bspl)
 
-Implemented using [a lexer](https://github.com/mikelsr/gauzaez) I created years
-ago while learning about finite automatons.
+The parser (module `parser`) can be used as a standalone parser. It was implemented using [a toy lexer](https://github.com/mikelsr/gauzaez) I created a while ago.
 
-## What does it do
-
-* Read a protocol described with BSPL and produce a Go structure with that description
-
-## What doesn't it do
-
- * Anything than isn't reading a protocol described with BSPL and producing a Go structure with that description, like checking the validity of the protocol
+The interfaces are the ones I used for another project.
