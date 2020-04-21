@@ -41,6 +41,23 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
+func TestParse(t *testing.T) {
+	dir, err := GetProjectDir()
+	if err != nil {
+		panic(err)
+	}
+	path := strings.Split(dir, string(os.PathSeparator))
+	dir = "/" + filepath.Join(path[:len(path)-1]...)
+	dir = filepath.Join(dir, "test", "samples", "example_1.bspl")
+	bsplSource, err := os.Open(dir)
+	if err != nil {
+		panic(err)
+	}
+	if _, err := Parse(bsplSource); err != nil {
+		t.FailNow()
+	}
+}
+
 func TestProtoBuilder_parseName(t *testing.T) {
 	b := new(ProtoBuilder)
 	i, err := b.parseName(testTokens.Tokens, testTokens.Values)
@@ -107,7 +124,7 @@ func TestProtoBuilder_parseRole(t *testing.T) {
 	}
 }
 
-func TestParseParams(t *testing.T) {
+func TestparseParams(t *testing.T) {
 	tokens := []am.Token{word, word, word, comma, word, word, comma, word, word, comma, word}
 	values := []string{In, "a", Key, ",", Out, "b", ",", "c", Key, ",", "d"}
 	expected := []proto.Parameter{

@@ -3,6 +3,7 @@ package parser
 import (
 	"errors"
 	"fmt"
+	"io"
 
 	am "bitbucket.org/mikelsr/gauzaez/lexer/automaton"
 	"github.com/mikelsr/bspl/proto"
@@ -43,6 +44,20 @@ var (
 	// scopeWords contains keywords describing parameter scopes
 	scopeWords = []string{In, Nil, Out}
 )
+
+// Parse a BSPL protocol
+func Parse(in io.Reader) (proto.Protocol, error) {
+	tokens, err := LexStream(in)
+	if err != nil {
+		return proto.Protocol{}, err
+	}
+	stripped := Strip(*tokens)
+	b := new(ProtoBuilder)
+	if err := b.Parse(stripped.Tokens, stripped.Values); err != nil {
+		return b.Protocol(), err
+	}
+	return b.Protocol(), nil
+}
 
 // ProtoBuilder is used to parse a BSPL file and produce a protocol
 type ProtoBuilder struct {
@@ -252,16 +267,6 @@ func (b *ProtoBuilder) parseActions(tokens []am.Token, values []string) (int, er
 	for _, i := range []int{0, 2} {
 		if buff.t[i] != word {
 			return 0, ParseError{Expected: "<Role>", Found: buff.v[i]}
-		}
-		// the role must match one of the roles declared previously
-		definedRole := false
-		for _, role := range b.p.Roles {
-			if string(role) == buff.v[i] {
-				definedRole = true
-			}
-		}
-		if !definedRole {
-			return 0, fmt.Errorf("Unknown role: %s", buff.v[i])
 		}
 	}
 	from = proto.Role(buff.v[0])
