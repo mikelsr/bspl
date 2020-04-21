@@ -2,6 +2,7 @@ package instance
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 
 	"github.com/mikelsr/bspl/parser"
@@ -15,10 +16,10 @@ type messageMarshaller struct {
 }
 
 type instanceMarshaller struct {
-	Protocol string `json:"protocol"`
-	Roles    Roles  `json:"roles"`
-	Values   Values `json:"protocol_values"`
-	Messages map[string]Message
+	Protocol string                       `json:"protocol"`
+	Roles    Roles                        `json:"roles"`
+	Values   Values                       `json:"protocol_values"`
+	Messages map[string]messageMarshaller `json:"messages"`
 }
 
 // MarshalAction marshals an Action into bytes
@@ -49,6 +50,45 @@ func UnmarshalAction(a *proto.Action, b []byte) error {
 }
 
 // Marshal an Instance
-func (i *Instance) Marshal() []byte {
+func (i *Instance) Marshal() ([]byte, error) {
+	im := instanceMarshaller{
+		Protocol: i.Protocol.String(),
+		Roles:    i.Roles,
+		Values:   i.Values,
+	}
+	im.Messages = make(map[string]messageMarshaller)
+	for k, m := range i.Messages {
+		mm := messageMarshaller{
+			InstanceKey: i.Key(),
+			Action:      m.Action.String(),
+			Values:      m.Values,
+		}
+		im.Messages[k] = mm
+	}
+	return json.Marshal(im)
+}
+
+// Unmarshal an instance
+func (i *Instance) Unmarshal(data []byte) error {
+	im := new(instanceMarshaller)
+	if err := json.Unmarshal(data, im); err != nil {
+		return err
+	}
+	p, err := parser.Parse(bytes.NewReader([]byte(im.Protocol)))
+	if err != nil {
+		return err
+	}
+	i.Protocol = p
+	i.Roles = im.Roles
+	i.Values = im.Values
+	i.Messages = make(Messages)
+	for k, v := range im.Messages {
+		a := new(proto.Action)
+		if err = UnmarshalAction(a, []byte(v.Action)); err != nil {
+			return err
+		}
+		m := Message{InstanceKey: v.InstanceKey, Action: *a, Values: v.Values}
+		i.Messages[k] = m
+	}
 	return nil
 }

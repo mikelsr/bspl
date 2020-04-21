@@ -14,14 +14,14 @@ func testProtocol() proto.Protocol {
 			{Name: "price", Io: proto.Out},
 		},
 		Actions: []proto.Action{
-			{Name: "Request", From: buyer, To: seller, Params: []proto.Parameter{
-				{Name: "ID", Key: true, Io: proto.Out},
-				{Name: "item", Io: proto.Out},
-			}},
 			{Name: "Offer", From: buyer, To: seller, Params: []proto.Parameter{
 				{Name: "ID", Key: true, Io: proto.In},
 				{Name: "item", Io: proto.In},
 				{Name: "price", Io: proto.Out},
+			}},
+			{Name: "Request", From: buyer, To: seller, Params: []proto.Parameter{
+				{Name: "ID", Key: true, Io: proto.Out},
+				{Name: "item", Io: proto.Out},
 			}},
 		},
 	}

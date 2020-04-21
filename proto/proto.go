@@ -67,6 +67,16 @@ func (p Protocol) Key() string {
 	return sb.String()
 }
 
+// Sort all elements of a protocol
+func (p *Protocol) Sort() {
+	SortRoles(p.Roles)
+	SortParameters(p.Params)
+	for _, a := range p.Actions {
+		SortParameters(a.Params)
+	}
+	SortActions(p.Actions)
+}
+
 func (a Action) String() string {
 	var s strings.Builder
 	s.WriteString(string(a.From) + " -> " + string(a.To) + ": " + a.Name + "[")
