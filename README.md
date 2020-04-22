@@ -5,6 +5,8 @@
 This repository also contains interfaces for a BSPL reasoner (`reason` package) and an implementation of some components of that reasoner (`implementation` package).
 This implementations are used in [another project](https://github.com/mikelsr/nahs).
 
+## Modules:
+
 * `parser`: Standalone BSPL parser implemented using [a toy lexer](https://github.com/mikelsr/gauzaez) I wrote a while ago.
 
 * `proto`: Go structures to form a BSPL protocol, e.g., `Protocol`, `Role` and `Action`.
@@ -14,6 +16,12 @@ This implementations are used in [another project](https://github.com/mikelsr/na
 * `implementation`: Draft implementation to use in another project.
 
 Production use of this project is not advised as it is far from ready.
+
+## Other folders:
+
+* `config`: Contains the automaton fed to the lexer to process a BSPL protocol.
+
+* `test`: Test resources.
 
 ## Usage example
 
