@@ -71,16 +71,16 @@ func (i Instance) Key() string {
 // Equals compares two instances
 func (i Instance) Equals(j Instance) bool {
 	// check protocols
-	if !reflect.DeepEqual(i.protocol, j.protocol) {
+	if !reflect.DeepEqual(i.Protocol(), j.Protocol()) {
 		return false
 	}
 	// check roles
-	if !reflect.DeepEqual(i.roles, j.roles) {
+	if !reflect.DeepEqual(i.Roles(), j.Roles()) {
 		return false
 	}
 	// check values
-	if !compareValues(i.values, j.values) {
+	if !i.Parameters().Equals(j.Parameters()) {
 		return false
 	}
-	return compareMessages(i.messages, j.messages)
+	return i.messages.Equals(j.messages)
 }

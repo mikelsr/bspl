@@ -2,17 +2,6 @@ package reason
 
 import "github.com/mikelsr/bspl/proto"
 
-// Messages maps action identifiers (.String()) to messages
-type Messages map[string]Message
-
-// Values maps component (Protocol, Action...) identifiers to
-// string values
-type Values map[string]string
-
-// Roles maps protocol roles to string IDs of the agents
-// assuming the roles
-type Roles map[proto.Role]string
-
 // Message instances an action
 type Message interface {
 	// Action a message belongs to

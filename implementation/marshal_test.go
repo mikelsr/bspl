@@ -83,7 +83,9 @@ func testMessageMarshal(t *testing.T) {
 	var m Message
 	for _, v := range i.Messages() {
 		m = v.(Message)
-		break
+		if m.action.Name == "Offer" {
+			break
+		}
 	}
 	data, err := m.Marshal()
 	if err != nil {
@@ -100,7 +102,9 @@ func testMessageUnarshal(t *testing.T) {
 	var expected Message
 	for _, v := range i.Messages() {
 		expected = v.(Message)
-		break
+		if expected.action.Name == "Offer" {
+			break
+		}
 	}
 	data, _ := expected.Marshal()
 	var m Message
@@ -109,9 +113,9 @@ func testMessageUnarshal(t *testing.T) {
 		t.FailNow()
 	}
 	m = im.(Message)
-	if !compareMessages(
-		Messages{m.Action().String(): m},
-		Messages{expected.Action().String(): expected}) {
+	m1 := Messages{m.Action().String(): m}
+	m2 := Messages{expected.Action().String(): expected}
+	if !m1.Equals(m2) {
 		t.FailNow()
 	}
 }
