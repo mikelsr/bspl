@@ -53,8 +53,8 @@ func Validate(p Protocol) error {
 }
 
 type linkedAction struct {
-	action Action
-	dst    []*linkedAction
+	action    Action
+	dependsOn []*linkedAction
 }
 
 func intersection(ins []Parameter, outs []Parameter) []Parameter {
@@ -78,6 +78,7 @@ func findLinkedAction(la []*linkedAction, a Action) *linkedAction {
 	return nil
 }
 
+// this has _a lot_ of room for improvement
 func createLinkedActions(as []Action) []*linkedAction {
 	dependencies := make([]*linkedAction, 0)
 	// each actions looks for the actions that preceed them
@@ -89,23 +90,23 @@ func createLinkedActions(as []Action) []*linkedAction {
 			// find common parameters between A inputs and B outputs
 			inter := intersection(a.Ins(), b.Outs())
 			if len(inter) > 0 {
-				var dst, src *linkedAction
+				var dependsOn, src *linkedAction
 				// find link to A if it was already created
-				dst = findLinkedAction(dependencies, b)
+				dependsOn = findLinkedAction(dependencies, b)
 				// if not, create link to B
-				if dst == nil {
-					dst = &linkedAction{action: b}
-					dependencies = append(dependencies, dst)
+				if dependsOn == nil {
+					dependsOn = &linkedAction{action: b}
+					dependencies = append(dependencies, dependsOn)
 				}
 				// find link to B if it was already created
 				src = findLinkedAction(dependencies, a)
 				// if not found, create link to A
 				if src == nil {
-					src = &linkedAction{action: a, dst: []*linkedAction{dst}}
+					src = &linkedAction{action: a, dependsOn: []*linkedAction{dependsOn}}
 					dependencies = append(dependencies, src)
 					// if found, modify link to A to add the new destination
 				} else {
-					src.dst = append(src.dst, dst)
+					src.dependsOn = append(src.dependsOn, dependsOn)
 				}
 			}
 		}
@@ -114,7 +115,6 @@ func createLinkedActions(as []Action) []*linkedAction {
 }
 
 func isChecked(l *linkedAction, checked []*linkedAction) bool {
-
 	for _, x := range checked {
 		if x == l {
 			return true
@@ -153,13 +153,13 @@ func _isCircular(l *linkedAction, checked []*linkedAction) bool {
 		return true
 	}
 	checked = append(checked, l)
-	if len(l.dst) == 0 {
+	if len(l.dependsOn) == 0 {
 		return false
 	}
 
 	// for each next node, repeat
-	for _, dst := range l.dst {
-		if _isCircular(dst, checked) {
+	for _, dependsOn := range l.dependsOn {
+		if _isCircular(dependsOn, checked) {
 			return true
 		}
 	}

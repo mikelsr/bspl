@@ -12,29 +12,29 @@ func TestIsCircular(t *testing.T) {
 	ad := Action{Name: "ad"}
 
 	c := &linkedAction{action: ac}
-	b := &linkedAction{action: ab, dst: []*linkedAction{c}}
-	a := &linkedAction{action: aa, dst: []*linkedAction{b}}
+	b := &linkedAction{action: ab, dependsOn: []*linkedAction{c}}
+	a := &linkedAction{action: aa, dependsOn: []*linkedAction{b}}
 
 	if isCircular(a) {
 		t.FailNow()
 	}
 
 	// a -> b -> c -> a
-	c.dst = []*linkedAction{a}
+	c.dependsOn = []*linkedAction{a}
 	if !isCircular(a) {
 		t.Fatal()
 	}
 	// a -> b-> c
 	// \-> d -/
-	c.dst = nil
-	d := &linkedAction{action: ad, dst: []*linkedAction{c}}
-	a.dst = append(a.dst, d)
+	c.dependsOn = nil
+	d := &linkedAction{action: ad, dependsOn: []*linkedAction{c}}
+	a.dependsOn = append(a.dependsOn, d)
 	if isCircular(a) {
 		t.Fatal()
 	}
 	// a -> b-> c -> a
 	// \-> d -/
-	c.dst = []*linkedAction{a}
+	c.dependsOn = []*linkedAction{a}
 	if !isCircular(a) {
 		t.Fatal()
 	}

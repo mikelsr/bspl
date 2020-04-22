@@ -1,6 +1,8 @@
 package proto
 
-import "strings"
+import (
+	"strings"
+)
 
 // Action in a BSPL protocol
 type Action struct {
@@ -159,6 +161,21 @@ func findOuts(params []Parameter) []Parameter {
 		}
 	}
 	return outParams
+}
+
+// Dependencies returns the list of actions required before
+// instancing a new action
+func (p Protocol) Dependencies(action Action) []Action {
+	deps := make([]Action, 0)
+	links := createLinkedActions(p.Actions)
+	for _, l := range links {
+		if l.action.String() == action.String() {
+			for _, dependency := range l.dependsOn {
+				deps = append(deps, dependency.action)
+			}
+		}
+	}
+	return deps
 }
 
 // Keys returns a list of the key parameters of the protocol
