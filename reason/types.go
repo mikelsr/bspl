@@ -1,8 +1,6 @@
 package reason
 
 import (
-	"reflect"
-
 	"github.com/mikelsr/bspl/proto"
 )
 
@@ -37,7 +35,7 @@ func (m Messages) Equals(others Messages) bool {
 		if message.InstanceKey() != om.InstanceKey() {
 			return false
 		}
-		if message.Parameters().Equals(om.Parameters()) {
+		if !message.Parameters().Equals(om.Parameters()) {
 			return false
 		}
 	}
@@ -49,5 +47,10 @@ func (v Values) Equals(others Values) bool {
 	if len(v) != len(others) {
 		return false
 	}
-	return reflect.DeepEqual(v, others)
+	for k, v1 := range v {
+		if v2, found := others[k]; !found || v1 != v2 {
+			return false
+		}
+	}
+	return true
 }

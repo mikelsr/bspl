@@ -110,6 +110,7 @@ func testMessageUnarshal(t *testing.T) {
 	var m Message
 	im, err := m.Unmarshal(data)
 	if err != nil {
+		t.Log(err)
 		t.FailNow()
 	}
 	m = im.(Message)
