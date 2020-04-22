@@ -7,6 +7,8 @@ This implementations are used in [another project](https://github.com/mikelsr/na
 
 * `parser`: Standalone BSPL parser implemented using [a toy lexer](https://github.com/mikelsr/gauzaez) I wrote a while ago.
 
+* `proto`: Go structures to form a BSPL protocol, e.g., `Protocol`, `Role` and `Action`.
+
 * `reason`: Interface definition for implementing a reasoner and protocol instances.
 
 * `implementation`: Draft implementation to use in another project.
