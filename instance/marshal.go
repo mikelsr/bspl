@@ -92,3 +92,29 @@ func (i *Instance) Unmarshal(data []byte) error {
 	}
 	return nil
 }
+
+// Marshal a Message
+func (m *Message) Marshal() ([]byte, error) {
+	mm := messageMarshaller{
+		InstanceKey: m.InstanceKey,
+		Action:      m.Action.String(),
+		Values:      m.Values,
+	}
+	return json.Marshal(mm)
+}
+
+// Unmarshal a Message
+func (m *Message) Unmarshal(data []byte) error {
+	mm := new(messageMarshaller)
+	if err := json.Unmarshal(data, mm); err != nil {
+		return err
+	}
+	m.InstanceKey = mm.InstanceKey
+	m.Values = mm.Values
+	a := new(proto.Action)
+	if err := UnmarshalAction(a, []byte(mm.Action)); err != nil {
+		return err
+	}
+	m.Action = *a
+	return nil
+}

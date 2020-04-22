@@ -10,8 +10,8 @@ func TestCompareValues(t *testing.T) {
 	v1 := make(Values)
 	v2 := make(Values)
 	for _, p := range p.Parameters() {
-		v1[p.String()] = Value(strValue)
-		v2[p.String()] = Value(strValue)
+		v1[p.String()] = strValue
+		v2[p.String()] = strValue
 	}
 	if !compareValues(v1, v2) {
 		t.Log("Couldn't compare equal values v1 and v2")

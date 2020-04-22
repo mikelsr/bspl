@@ -7,7 +7,7 @@ import (
 	"github.com/mikelsr/bspl/proto"
 )
 
-// Input of a protocol contains a map of the values of the input
+// Input of a protocol contains a map of the values of the in
 // parameters of a protocol and the names of said parameters
 // map[name]value
 type Input map[string]string
@@ -24,11 +24,8 @@ type Instance struct {
 	Messages map[string]Message
 }
 
-// Value of a parameter
-type Value string
-
 // Values maps Parameter.String() to Value
-type Values map[string]Value
+type Values map[string]string
 
 // Message is an instance of an action for an instance of a protocol
 type Message struct {
