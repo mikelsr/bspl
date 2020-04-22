@@ -33,6 +33,8 @@ type (
 	Reasoner = instance.Reasoner
 	// Roles is an alias for instance.Roles
 	Roles = instance.Roles
+	// Values is an alias for instance.Values
+	Values = instance.Values
 )
 
 const (
