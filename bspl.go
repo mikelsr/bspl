@@ -21,17 +21,17 @@ type (
 	// Role is an alias for proto.Role
 	Role = proto.Role
 
-	// Reasoner is an alias for instance.Reasoner
+	// Reasoner is an alias for reason.Reasoner
 	Reasoner = reason.Reasoner
-	// Instance is an alias for instance.Instance
+	// Instance is an alias for reason.Instance
 	Instance = reason.Instance
-	// Message is an alias for instance.Message
+	// Message is an alias for reason.Message
 	Message = reason.Message
-	// Messages is an alias for instance.Messages
+	// Messages is an alias for reason.Messages
 	Messages = reason.Messages
-	// Roles is an alias for instance.Roles
+	// Roles is an alias for reason.Roles
 	Roles = reason.Roles
-	// Values is an alias for instance.Values
+	// Values is an alias for reason.Values
 	Values = reason.Values
 )
 
