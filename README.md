@@ -17,7 +17,8 @@ Production use of this project is not advised as it is far from ready.
 
 1. Define a valid protocol in a file with path `path`.
 
-2. 
+2. Open the file and pass the reader to bspl.Parse()
+
 ```go
 package main
 
@@ -40,3 +41,5 @@ func main() {
         fmt.Println(protocol)
 }
 ```
+
+3. Done!
