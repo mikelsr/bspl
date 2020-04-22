@@ -1,4 +1,4 @@
-package instance
+package implementation
 
 import (
 	"bytes"
@@ -51,12 +51,13 @@ func testInstanceMarshal(t *testing.T) {
 func testInstanceUnmarshal(t *testing.T) {
 	expected := testInstance()
 	data, _ := expected.Marshal()
-	i := new(Instance)
-	if err := i.Unmarshal(data); err != nil {
+	var i Instance
+	var err error
+	if i, err = i.Unmarshal(data); err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
-	if !expected.Equals(*i) {
+	if !expected.Equals(i) {
 		t.FailNow()
 	}
 }
@@ -80,8 +81,8 @@ func testMessageMarshal(t *testing.T) {
 		112, 114, 105, 99, 101, 34, 58, 34, 88, 34, 125, 125}
 	i := testInstance()
 	var m Message
-	for _, v := range i.Messages {
-		m = v
+	for _, v := range i.Messages() {
+		m = v.(Message)
 		break
 	}
 	data, err := m.Marshal()
@@ -97,18 +98,20 @@ func testMessageMarshal(t *testing.T) {
 func testMessageUnarshal(t *testing.T) {
 	i := testInstance()
 	var expected Message
-	for _, v := range i.Messages {
-		expected = v
+	for _, v := range i.Messages() {
+		expected = v.(Message)
 		break
 	}
 	data, _ := expected.Marshal()
-	m := new(Message)
-	if err := m.Unmarshal(data); err != nil {
+	var m Message
+	im, err := m.Unmarshal(data)
+	if err != nil {
 		t.FailNow()
 	}
+	m = im.(Message)
 	if !compareMessages(
-		Messages{m.Action.String(): *m},
-		Messages{expected.Action.String(): expected}) {
+		Messages{m.Action().String(): m},
+		Messages{expected.Action().String(): expected}) {
 		t.FailNow()
 	}
 }

@@ -1,4 +1,4 @@
-package instance
+package implementation
 
 import "github.com/mikelsr/bspl/proto"
 
@@ -30,27 +30,27 @@ func testProtocol() proto.Protocol {
 
 func testInstance() Instance {
 	p := testProtocol()
-	i := Instance{Protocol: p}
+	i := Instance{protocol: p}
 	roles := Roles{
 		proto.Role("Buyer"):  "B",
 		proto.Role("Seller"): "S",
 	}
-	i.Roles = roles
+	i.roles = roles
 	values := make(Values)
 	for _, param := range p.Parameters() {
 		values[param.String()] = "X"
 	}
-	i.Values = values
-	i.Messages = make(Messages)
+	i.values = values
+	i.messages = make(Messages)
 	for _, a := range p.Actions {
 		actionValues := make(Values)
 		for _, param := range a.Parameters() {
 			actionValues[param.String()] = "X"
 		}
-		i.Messages[a.String()] = Message{
-			InstanceKey: i.Key(),
-			Action:      a,
-			Values:      actionValues,
+		i.messages[a.String()] = Message{
+			instanceKey: i.Key(),
+			action:      a,
+			values:      actionValues,
 		}
 	}
 	return i
