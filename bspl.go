@@ -4,9 +4,9 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/mikelsr/bspl/instance"
 	"github.com/mikelsr/bspl/parser"
 	"github.com/mikelsr/bspl/proto"
+	"github.com/mikelsr/bspl/reason"
 )
 
 type (
@@ -21,20 +21,18 @@ type (
 	// Role is an alias for proto.Role
 	Role = proto.Role
 
-	// Instance is an alias for instance.Instance
-	Instance = instance.Instance
-	// Input is an alias for instance.Input
-	Input = instance.Input
-	// Message is an alias for instance.Message
-	Message = instance.Message
-	// Messages is an alias for instance.Messages
-	Messages = instance.Messages
 	// Reasoner is an alias for instance.Reasoner
-	Reasoner = instance.Reasoner
+	Reasoner = reason.Reasoner
+	// Instance is an alias for instance.Instance
+	Instance = reason.Instance
+	// Message is an alias for instance.Message
+	Message = reason.Message
+	// Messages is an alias for instance.Messages
+	Messages = reason.Messages
 	// Roles is an alias for instance.Roles
-	Roles = instance.Roles
+	Roles = reason.Roles
 	// Values is an alias for instance.Values
-	Values = instance.Values
+	Values = reason.Values
 )
 
 const (
