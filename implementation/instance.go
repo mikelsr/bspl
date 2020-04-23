@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/mikelsr/bspl/proto"
+	"github.com/mikelsr/bspl/reason"
 )
 
 // Instance of a protocol
@@ -42,7 +43,7 @@ func (i Instance) Messages() Messages {
 }
 
 // AddMessage adds a new message to an instance
-func (i Instance) AddMessage(m Message) error {
+func (i Instance) AddMessage(m reason.Message) error {
 	if _, found := i.messages[m.Action().String()]; found {
 		return fmt.Errorf("Message already exists for action '%s'", m.Action())
 	}
@@ -69,7 +70,7 @@ func (i Instance) Key() string {
 }
 
 // Equals compares two instances
-func (i Instance) Equals(j Instance) bool {
+func (i Instance) Equals(j reason.Instance) bool {
 	// check protocols
 	if !reflect.DeepEqual(i.Protocol(), j.Protocol()) {
 		return false
@@ -82,5 +83,5 @@ func (i Instance) Equals(j Instance) bool {
 	if !i.Parameters().Equals(j.Parameters()) {
 		return false
 	}
-	return i.messages.Equals(j.messages)
+	return i.messages.Equals(j.Messages())
 }

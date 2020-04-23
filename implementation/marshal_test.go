@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mikelsr/bspl/proto"
+	"github.com/mikelsr/bspl/reason"
 )
 
 func TestMarshalAction(t *testing.T) {
@@ -51,13 +52,14 @@ func testInstanceMarshal(t *testing.T) {
 func testInstanceUnmarshal(t *testing.T) {
 	expected := testInstance()
 	data, _ := expected.Marshal()
-	var i Instance
+	var i reason.Instance
+	var x Instance
 	var err error
-	if i, err = i.Unmarshal(data); err != nil {
+	if i, err = x.Unmarshal(data); err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
-	if !expected.Equals(i) {
+	if !expected.Equals(i.(Instance)) {
 		t.FailNow()
 	}
 }

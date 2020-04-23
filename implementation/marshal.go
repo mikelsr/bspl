@@ -70,7 +70,7 @@ func (i Instance) Marshal() ([]byte, error) {
 }
 
 // Unmarshal an instance
-func (i Instance) Unmarshal(data []byte) (Instance, error) {
+func (i Instance) Unmarshal(data []byte) (reason.Instance, error) {
 	result := Instance{}
 	im := new(instanceMarshaller)
 	if err := json.Unmarshal(data, im); err != nil {
