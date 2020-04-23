@@ -19,7 +19,7 @@ type Instance struct {
 
 // NewInstance is the default constructor for Instance
 func NewInstance(protocol proto.Protocol, roles Roles, parameters Values) Instance {
-	return Instance{protocol: protocol, roles: roles, values: parameters}
+	return Instance{protocol: protocol, roles: roles, values: parameters, messages: make(Messages, 0)}
 }
 
 // Protocol of the Instance
