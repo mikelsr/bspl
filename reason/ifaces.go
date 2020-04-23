@@ -58,5 +58,5 @@ type Reasoner interface {
 	// RegisterInstance registers an Instance created by another Reasoner
 	RegisterInstance(i Instance) error
 	// RegisterMessage registers a Message created by another Reasoner
-	RegisterMessage(instanceKey string, m Message) (Instance, error)
+	RegisterMessage(instanceKey string, m Message) error
 }
