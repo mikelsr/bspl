@@ -58,4 +58,6 @@ type Reasoner interface {
 	// for that it must check the validity of the message in the
 	// current state of the instance.
 	NewMessage(i Instance, a proto.Action) (Message, error)
+	// RegisterInstance registers an instance created by another Reasoner
+	RegisterInstance(i Instance) error
 }
