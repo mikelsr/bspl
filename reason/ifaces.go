@@ -43,10 +43,12 @@ type Instance interface {
 // Reasoner handles the protocol instances and actions related to them
 type Reasoner interface {
 	// Abort an Instance for whatever reason
-	Abort(i Instance, reason string) error
+	Abort(instanceKey string, reason string) error
 	// Addmesage adds a message to the instance if the message was
 	// created by another role.
-	Addmesage(i Instance, m Message) (Instance, error)
+	Addmesage(instanceKey string, m Message) (Instance, error)
+	// GetInstance returns an Instance given the instance key
+	GetInstance(instanceKey string) (Instance, bool)
 	// All instances of a Protocol
 	Instances(p proto.Protocol) []Instance
 	// Instantiate a protocol. Check if the assigned role is a role
