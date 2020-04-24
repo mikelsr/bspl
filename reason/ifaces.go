@@ -50,7 +50,7 @@ type Reasoner interface {
 	Instances(p proto.Protocol) []Instance
 	// Instantiate a protocol. Check if the assigned role is a role
 	// the reasoner is willing to play.
-	Instantiate(p proto.Protocol, ins Values) (Instance, error)
+	Instantiate(p proto.Protocol, roles Roles, ins Values) (Instance, error)
 	// NewMessage creates a message for an action of an instance
 	// for that it must check the validity of the message in the
 	// current state of the instance.
