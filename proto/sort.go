@@ -75,11 +75,15 @@ func (p parameters) Less(i, j int) bool {
 	return p1.Name < p2.Name
 }
 
-// SortParameters sorts protocol parameters
-// 1 - Keys sorted alphabetically
-// 2 - Ins sorted alphabetically
-// 3 - Nils sorted alphabetically
-// 4 - Outs sorted alphabetically
+// SortParameters sorts protocol parameters.
+//
+// 1 - Keys sorted alphabetically.
+//
+// 2 - Ins sorted alphabetically.
+//
+// 3 - Nils sorted alphabetically.
+//
+// 4 - Outs sorted alphabetically.
 func SortParameters(params []Parameter) {
 	sort.Sort(parameters(params))
 }

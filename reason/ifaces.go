@@ -42,8 +42,8 @@ type Instance interface {
 
 // Reasoner handles the protocol instances and actions related to them
 type Reasoner interface {
-	// Abort an Instance for whatever motive
-	Abort(instanceKey string, motive string) error
+	// DropInstance cancels an Instance for whatever motive
+	DropInstance(instanceKey string, motive string) error
 	// GetInstance returns an Instance given the instance key
 	GetInstance(instanceKey string) (Instance, bool)
 	// All instances of a Protocol
