@@ -4,9 +4,6 @@ import (
 	"github.com/mikelsr/bspl/reason"
 )
 
-// Messages maps Instance.Key() to Message
-type Messages = reason.Messages
-
 // Roles assings a libp2p peerID to each role so they are identifiable
 // in the network
 type Roles = reason.Roles

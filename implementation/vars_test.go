@@ -28,30 +28,17 @@ func testProtocol() proto.Protocol {
 	return p
 }
 
-func testInstance() Instance {
+func testInstance() *Instance {
 	p := testProtocol()
-	i := Instance{protocol: p}
 	roles := Roles{
 		proto.Role("Buyer"):  "B",
 		proto.Role("Seller"): "S",
 	}
-	i.roles = roles
+	i := NewInstance(p, roles)
 	values := make(Values)
 	for _, param := range p.Parameters() {
 		values[param.String()] = "X"
 	}
 	i.values = values
-	i.messages = make(Messages)
-	for _, a := range p.Actions {
-		actionValues := make(Values)
-		for _, param := range a.Parameters() {
-			actionValues[param.String()] = "X"
-		}
-		i.messages[a.String()] = Message{
-			instanceKey: i.Key(),
-			action:      a,
-			values:      actionValues,
-		}
-	}
 	return i
 }

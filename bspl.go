@@ -25,10 +25,6 @@ type (
 	Reasoner = reason.Reasoner
 	// Instance is an alias for reason.Instance
 	Instance = reason.Instance
-	// Message is an alias for reason.Message
-	Message = reason.Message
-	// Messages is an alias for reason.Messages
-	Messages = reason.Messages
 	// Roles is an alias for reason.Roles
 	Roles = reason.Roles
 	// Values is an alias for reason.Values

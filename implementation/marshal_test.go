@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/mikelsr/bspl/proto"
-	"github.com/mikelsr/bspl/reason"
 )
 
 func TestMarshalAction(t *testing.T) {
@@ -52,73 +51,12 @@ func testInstanceMarshal(t *testing.T) {
 func testInstanceUnmarshal(t *testing.T) {
 	expected := testInstance()
 	data, _ := expected.Marshal()
-	var i reason.Instance
-	var x Instance
-	var err error
-	if i, err = x.Unmarshal(data); err != nil {
+	i := new(Instance)
+	if err := i.Unmarshal(data); err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
-	if !expected.Equals(i.(Instance)) {
-		t.FailNow()
-	}
-}
-
-func TestMessage_MarshalAndUnmarshal(t *testing.T) {
-	testMessageMarshal(t)
-	testInstanceUnmarshal(t)
-}
-
-func testMessageMarshal(t *testing.T) {
-	expected := []byte{123, 34, 105, 110, 115, 116, 97, 110, 99, 101, 95, 107,
-		101, 121, 34, 58, 34, 80, 114, 111, 116, 111, 78, 97, 109, 101, 44,
-		73, 68, 58, 88, 34, 44, 34, 97, 99, 116, 105, 111, 110, 34, 58, 34,
-		66, 117, 121, 101, 114, 32, 45, 92, 117, 48, 48, 51, 101, 32, 83,
-		101, 108, 108, 101, 114, 58, 32, 79, 102, 102, 101, 114, 91, 105,
-		110, 32, 73, 68, 32, 107, 101, 121, 44, 32, 105, 110, 32, 105, 116,
-		101, 109, 44, 32, 111, 117, 116, 32, 112, 114, 105, 99, 101, 93, 34,
-		44, 34, 118, 97, 108, 117, 101, 115, 34, 58, 123, 34, 105, 110, 32,
-		73, 68, 32, 107, 101, 121, 34, 58, 34, 88, 34, 44, 34, 105, 110, 32,
-		105, 116, 101, 109, 34, 58, 34, 88, 34, 44, 34, 111, 117, 116, 32,
-		112, 114, 105, 99, 101, 34, 58, 34, 88, 34, 125, 125}
-	i := testInstance()
-	var m Message
-	for _, v := range i.Messages() {
-		m = v.(Message)
-		if m.action.Name == "Offer" {
-			break
-		}
-	}
-	data, err := m.Marshal()
-	if err != nil {
-		t.Log(err)
-		t.FailNow()
-	}
-	if !bytes.Equal(data, expected) {
-		t.FailNow()
-	}
-}
-
-func testMessageUnarshal(t *testing.T) {
-	i := testInstance()
-	var expected Message
-	for _, v := range i.Messages() {
-		expected = v.(Message)
-		if expected.action.Name == "Offer" {
-			break
-		}
-	}
-	data, _ := expected.Marshal()
-	var m Message
-	im, err := m.Unmarshal(data)
-	if err != nil {
-		t.Log(err)
-		t.FailNow()
-	}
-	m = im.(Message)
-	m1 := Messages{m.Action().String(): m}
-	m2 := Messages{expected.Action().String(): expected}
-	if !m1.Equals(m2) {
+	if !expected.Equals(i) {
 		t.FailNow()
 	}
 }

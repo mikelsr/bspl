@@ -7,20 +7,12 @@ import (
 
 	"github.com/mikelsr/bspl/parser"
 	"github.com/mikelsr/bspl/proto"
-	"github.com/mikelsr/bspl/reason"
 )
 
-type messageMarshaller struct {
-	InstanceKey string `json:"instance_key"`
-	Action      string `json:"action"`
-	Values      Values `json:"values"`
-}
-
 type instanceMarshaller struct {
-	Protocol string                       `json:"protocol"`
-	Roles    Roles                        `json:"roles"`
-	Values   Values                       `json:"protocol_values"`
-	Messages map[string]messageMarshaller `json:"messages"`
+	Protocol string `json:"protocol"`
+	Roles    Roles  `json:"roles"`
+	Values   Values `json:"protocol_values"`
 }
 
 // MarshalAction marshals an Action into bytes
@@ -51,73 +43,27 @@ func UnmarshalAction(a *proto.Action, b []byte) error {
 }
 
 // Marshal an Instance
-func (i Instance) Marshal() ([]byte, error) {
+func (i *Instance) Marshal() ([]byte, error) {
 	im := instanceMarshaller{
 		Protocol: i.protocol.String(),
 		Roles:    i.roles,
 		Values:   i.values,
 	}
-	im.Messages = make(map[string]messageMarshaller)
-	for k, m := range i.messages {
-		mm := messageMarshaller{
-			InstanceKey: i.Key(),
-			Action:      m.Action().String(),
-			Values:      m.Parameters(),
-		}
-		im.Messages[k] = mm
-	}
 	return json.Marshal(im)
 }
 
 // Unmarshal an instance
-func (i Instance) Unmarshal(data []byte) (reason.Instance, error) {
-	result := Instance{}
+func (i *Instance) Unmarshal(data []byte) error {
 	im := new(instanceMarshaller)
 	if err := json.Unmarshal(data, im); err != nil {
-		return Instance{}, err
+		return err
 	}
 	p, err := parser.Parse(bytes.NewReader([]byte(im.Protocol)))
 	if err != nil {
-		return Instance{}, err
+		return err
 	}
-	result.protocol = p
-	result.roles = im.Roles
-	result.values = im.Values
-	result.messages = make(Messages)
-	for k, v := range im.Messages {
-		a := new(proto.Action)
-		if err = UnmarshalAction(a, []byte(v.Action)); err != nil {
-			return Instance{}, err
-		}
-		m := Message{instanceKey: v.InstanceKey, action: *a, values: v.Values}
-		result.messages[k] = m
-	}
-	return result, nil
-}
-
-// Marshal a Message
-func (m Message) Marshal() ([]byte, error) {
-	mm := messageMarshaller{
-		InstanceKey: m.instanceKey,
-		Action:      m.action.String(),
-		Values:      m.values,
-	}
-	return json.Marshal(mm)
-}
-
-// Unmarshal a Message
-func (m Message) Unmarshal(data []byte) (reason.Message, error) {
-	result := Message{}
-	mm := new(messageMarshaller)
-	if err := json.Unmarshal(data, mm); err != nil {
-		return Message{}, err
-	}
-	result.instanceKey = mm.InstanceKey
-	result.values = mm.Values
-	a := new(proto.Action)
-	if err := UnmarshalAction(a, []byte(mm.Action)); err != nil {
-		return Message{}, err
-	}
-	result.action = *a
-	return result, nil
+	i.protocol = p
+	i.roles = im.Roles
+	i.values = im.Values
+	return nil
 }
