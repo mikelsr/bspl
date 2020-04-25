@@ -51,5 +51,5 @@ type Reasoner interface {
 	RegisterInstance(i Instance) error
 	// UpdateInstance updates an instance with a newer version of itself
 	// as long as a valid run from one to the other.
-	UpdateInstance(newVersion Instance)
+	UpdateInstance(newVersion Instance) error
 }
