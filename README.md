@@ -63,5 +63,4 @@ func main() {
 
  The `Message` struct is redundant: the ocurred action can be derived from
 the outputted values from the previous state of the instance to the current
-one. The implementation does extrapolate the order of the actions from their
-parameters so this shouldn't take too long.
+one.
