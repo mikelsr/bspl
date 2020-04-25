@@ -32,8 +32,12 @@ func (i *Instance) Diff(j reason.Instance) ([]bspl.Action, Values, error) {
 	diffParams := make(map[string]bspl.Parameter)
 	for paramStr, newValue := range j.Parameters() {
 		value, found := i.Parameters()[paramStr]
-		if value != "" {
-			return nil, nil, fmt.Errorf("Mismatched values for param '%s'", paramStr)
+		if found {
+			if value != newValue {
+				return nil, nil, fmt.Errorf("Mismatched values for param '%s'", paramStr)
+			} else if value != "" {
+				continue
+			}
 		}
 		param, found := i.paramFromString(paramStr)
 		if !found {
