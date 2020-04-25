@@ -47,10 +47,9 @@ type Reasoner interface {
 	// Instantiate a protocol. Check if the assigned role is a role
 	// the reasoner is willing to play.
 	Instantiate(p proto.Protocol, roles Roles, ins Values) (Instance, error)
-	// UpdateInstance updates an instance with a newer version of itself
-	// as long as a valid run from one to the other.
-	UpdateInstance(instanceKey string, newVersion Instance)
 	// RegisterInstance registers an Instance created by another Reasoner
 	RegisterInstance(i Instance) error
-	// RegisterMessage registers a Message created by another Reasoner
+	// UpdateInstance updates an instance with a newer version of itself
+	// as long as a valid run from one to the other.
+	UpdateInstance(newVersion Instance)
 }
