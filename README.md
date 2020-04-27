@@ -6,7 +6,7 @@
 [![Go Version](https://img.shields.io/github/go-mod/go-version/mikelsr/bspl)](https://github.com/mikelsr/bspl/blob/master/go.mod)
 
 This repository also contains interfaces for a BSPL reasoner (`reason` package) and an implementation of some components of that reasoner (`implementation` package).
-This implementations are used in [another project](https://github.com/mikelsr/nahs).
+This implementation is used in [another project](https://github.com/mikelsr/nahs).
 
 ## Modules
 
