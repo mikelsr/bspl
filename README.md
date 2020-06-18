@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/mikelsr/bspl/branch/master/graph/badge.svg?token=ZKX6HOVW00)](https://codecov.io/gh/mikelsr/bspl)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/mikelsr/bspl)](https://github.com/mikelsr/bspl/blob/master/go.mod)
+[![GoDoc Reference](https://godoc.org/github.com/mikelsr/bspl?status.svg)](https://godoc.org/github.com/mikelsr/bspl)
 
 This repository also contains interfaces for a BSPL reasoner (`reason` package) and an implementation of some components of that reasoner (`implementation` package).
 This implementation is used in [another project](https://github.com/mikelsr/nahs).
@@ -30,7 +31,7 @@ Production use of this project is not advised as it is far from ready.
 
 1. Define a valid protocol in a file with path `path`.
 
-2. Open the file and pass the reader to bspl.Parse()
+2. Open the file and pass the reader to `bspl.Parse()`
 
 ```go
 package main
